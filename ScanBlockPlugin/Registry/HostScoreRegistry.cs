@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace Alstra.ScanBlockPlugin.Registry;
 
@@ -23,7 +23,7 @@ internal class HostScoreRegistry
     /// </remarks>
     public void AddScore(string host, ushort score, string reason)
     {
-        if (GetScore(host) > MaxScore)
+        if (GetScore(host) >= MaxScore)
         {
             return;
         }
@@ -58,7 +58,7 @@ internal class HostScoreRegistry
     public void PurgeOldScores(string host)
     {
         var oldScore = GetScore(host);
-        if (oldScore > MaxScore)
+        if (oldScore >= MaxScore)
         {
             return;
         }
