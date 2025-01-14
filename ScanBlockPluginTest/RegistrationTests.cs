@@ -13,7 +13,10 @@ public class RegistrationTests : BaseIntegrationTest
     [Test]
     public void RegistersHandlersCorrectly()
     {
-        Assert.That(AppHost.GlobalRequestFilters, Has.Count.EqualTo(1));
-        Assert.That(AppHost.CatchAllHandlers, Has.Count.EqualTo(3));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(AppHost.GlobalRequestFilters, Has.Count.EqualTo(1));
+            Assert.That(AppHost.CatchAllHandlers, Has.Count.EqualTo(3));
+        }
     }
 }
