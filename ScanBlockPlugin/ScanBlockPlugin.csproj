@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>latestMajor</LangVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Alstra.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ErrorReport>none</ErrorReport>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
