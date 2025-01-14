@@ -103,7 +103,7 @@ namespace Alstra.ScanBlockPlugin
             }
 
             // Add score if necessary and update registry
-            RegisterScores(request.UserHostAddress, request.PathInfo, request.RawUrl);
+            RegisterScores(request);
 
             // Evaluate score
             if (HostScoreRegistry.GetScore(request.UserHostAddress) < config.BlockScoreThreshold)
@@ -115,8 +115,11 @@ namespace Alstra.ScanBlockPlugin
             HostScoreRegistry.PurgeOldScores(request.UserHostAddress);
 
             // Check score again after purge and block if necessary
-            if (HostScoreRegistry.GetScore(request.UserHostAddress) >= config.BlockScoreThreshold)
+            var score = HostScoreRegistry.GetScore(request.UserHostAddress);
+            if (score >= config.BlockScoreThreshold)
             {
+                config.OnBlockedRequest(request, $"{request.UserHostAddress} blocked due to a score of {score}");
+
                 response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
                 response.Dto = DtoUtils.CreateErrorResponse(request, new HttpError(HttpStatusCode.ServiceUnavailable, "ServiceUnavailable"));
                 response.EndRequest();
@@ -163,40 +166,42 @@ namespace Alstra.ScanBlockPlugin
         /// <summary>
         /// Add score if request path is forbidden
         /// </summary>
-        private void RegisterScores(string host, string path, string rawUrl)
+        private void RegisterScores(IRequest request)
         {
-            var lowerCasePath = path.ToLowerInvariant();
-            var lowerCaseRawUrl = rawUrl.ToLowerInvariant();
+            var lowerCasePath = request.PathInfo.ToLowerInvariant();
+            var lowerCaseRawUrl = request.RawUrl.ToLowerInvariant();
+            ushort score = 0;
+            var reason = string.Empty;
 
             if (config.ForbiddenFullPaths.Contains(lowerCasePath))
             {
-                HostScoreRegistry.AddScore(
-                    host,
-                    config.ForbiddenFullPathsScore,
-                    $"Forbidden path: {lowerCasePath}");
+                score = config.ForbiddenFullPathsScore;
+                reason = $"Forbidden path: {lowerCasePath}";
             }
             else if (config.ForbiddenPartialPaths.Any(lowerCaseRawUrl.Contains))
             {
                 var forbiddenPartialPath = config.ForbiddenPartialPaths.First(lowerCaseRawUrl.Contains);
-                HostScoreRegistry.AddScore(
-                    host,
-                    config.ForbiddenPartialPathsScore,
-                    $"Forbidden partial path \"{forbiddenPartialPath}\" in {lowerCaseRawUrl}");
+
+                score = config.ForbiddenPartialPathsScore;
+                reason = $"Forbidden partial path \"{forbiddenPartialPath}\" in {lowerCaseRawUrl}";
             }
             else if (config.BadFileEndings.Any(lowerCasePath.EndsWith))
             {
-                HostScoreRegistry.AddScore(
-                    host,
-                    config.BadFileEndingsScore,
-                    $"Bad file ending: {lowerCasePath}");
+                score = config.BadFileEndingsScore;
+                reason = $"Bad file ending: {lowerCasePath}";
             }
             else if (config.BadPartialPaths.Any(lowerCaseRawUrl.Contains))
             {
                 var badPartialPath = config.BadPartialPaths.First(lowerCaseRawUrl.Contains);
-                HostScoreRegistry.AddScore(
-                    host,
-                    config.BadPartialPathsScore,
-                    $"Bad partial path \"{badPartialPath}\" in {lowerCaseRawUrl}");
+
+                score = config.BadPartialPathsScore;
+                reason = $"Bad partial path \"{badPartialPath}\" in {lowerCaseRawUrl}";
+            }
+
+            if (score > 0)
+            {
+                HostScoreRegistry.AddScore(request.UserHostAddress, score, reason);
+                config.OnScoredRequest(request, reason);
             }
         }
     }
