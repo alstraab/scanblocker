@@ -34,6 +34,10 @@ public override void Configure(Container container)
         PermanentlyAllowedHosts = ["123.456.789.10", "example.com"],
         // Use a custom URL for viewing host scores
         HostScoreListingPath = "/host-scores", // defaults to "/scanblock/hosts"
+        // Log requests that got a score
+        OnScoredRequest = (req, reason) => Log.Warning(reason),
+        // Log blocked requests
+        OnBlockedRequest = (request, reason) => Log.Warning(reason),
     }));
 }
 ```

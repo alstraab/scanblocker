@@ -81,6 +81,16 @@ namespace Alstra.ScanBlockPlugin.Config
         public Func<IRequest, bool> SkipHostScoringForRequest { get; set; }
 
         /// <summary>
+        /// Do something when request is blocked
+        /// </summary>
+        public Action<IRequest, string> OnBlockedRequest { get; set; } = (request, reason) => { };
+
+        /// <summary>
+        /// Do something when request gets a score
+        /// </summary>
+        public Action<IRequest, string> OnScoredRequest { get; set; } = (request, reason) => { };
+
+        /// <summary>
         /// Formatter for <see cref="HostScoreInfo"/>
         /// </summary>
         public HostScoreInfoFormatter HostScoreInfoFormatter { get; set; } = new PlainTextFormatter();
