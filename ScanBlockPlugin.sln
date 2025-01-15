@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanBlockPlugin", "ScanBlockPlugin\ScanBlockPlugin.csproj", "{D85C5E74-35C1-440B-8949-3B7F5AF82780}"
+EndProject
+
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D85C5E74-35C1-440B-8949-3B7F5AF82780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85C5E74-35C1-440B-8949-3B7F5AF82780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85C5E74-35C1-440B-8949-3B7F5AF82780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85C5E74-35C1-440B-8949-3B7F5AF82780}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
