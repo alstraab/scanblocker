@@ -122,6 +122,14 @@ namespace Alstra.ScanBlockPlugin.Registry
 
             if (current != null)
             {
+                // On rare occasions requests are counted twice
+                // since we listen to both GlobalRequestFilters and CatchAllHandlers
+                // So only count once per day and reason
+                if (current.Reasons.Contains(reason))
+                {
+                    return list;
+                }
+
                 current.Score += score;
                 current.Reasons.Add(reason);
             }
