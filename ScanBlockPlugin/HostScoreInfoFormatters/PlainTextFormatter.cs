@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using Alstra.ScanBlockPlugin.Config;
 using Alstra.ScanBlockPlugin.Registry;
@@ -18,13 +20,13 @@ namespace Alstra.ScanBlockPlugin.HostScoreInfoFormatters
             hosts.Sort();
 
             var columns = new Dictionary<string, List<string>>()
-        {
-            { "Blocked", ["Blocked"] },
-            { "Host", ["Host"] },
-            { "Date", ["Date"] },
-            { "Score", ["Score"] },
-            { "Reasons", ["Reasons"] },
-        };
+            {
+                { "Blocked", new List<string> { "Blocked" } },
+                { "Host", new List<string> { "Host"} },
+                { "Date", new List<string> { "Date"} },
+                { "Score", new List<string> { "Score"} },
+                { "Reasons", new List<string> { "Reasons"} },
+            };
 
             foreach (var host in hosts)
             {
@@ -45,7 +47,7 @@ namespace Alstra.ScanBlockPlugin.HostScoreInfoFormatters
                         columns["Blocked"].Add("");
                         columns["Host"].Add("");
                     }
-                    columns["Date"].Add(score.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                    columns["Date"].Add(score.Date);
                     columns["Score"].Add(score.Score.ToString(CultureInfo.InvariantCulture));
 
                     foreach (var reason in score.Reasons)

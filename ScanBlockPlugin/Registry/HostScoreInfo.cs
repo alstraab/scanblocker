@@ -1,8 +1,11 @@
-﻿namespace Alstra.ScanBlockPlugin.Registry;
+using System.Collections.Generic;
 
-internal class HostScoreInfo
+namespace Alstra.ScanBlockPlugin.Registry
 {
-    public DateOnly Date { get; set; }
-    public ushort Score { get; set; }
-    public List<string> Reasons { get; set; } = [];
+    internal class HostScoreInfo
+    {
+        public string Date { get; set; }
+        public ushort Score { get; set; }
+        public List<string> Reasons { get; set; } = new List<string>();
+    }
 }

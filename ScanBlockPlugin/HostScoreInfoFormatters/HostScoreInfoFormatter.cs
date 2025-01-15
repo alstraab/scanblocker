@@ -1,4 +1,5 @@
-﻿using Alstra.ScanBlockPlugin.Config;
+using System.Collections.Generic;
+using Alstra.ScanBlockPlugin.Config;
 using Alstra.ScanBlockPlugin.Registry;
 
 namespace Alstra.ScanBlockPlugin.HostScoreInfoFormatters
