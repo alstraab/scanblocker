@@ -2,19 +2,32 @@ name: Publish NuGet Package
 
 on:
   workflow_dispatch:
+    inputs:
+      VERSION:
+        required: true
+        type: string
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Update assembly version in Blue.csproj ✍️
+        env:
+          CS_PROJ_PATH: ScanBlockPlugin/ScanBlockPlugin.csproj
+        run: |
+          for tag in AssemblyVersion FileVersion Version; do
+            sed -i "s#<$tag>.*</$tag>#<$tag>${{ inputs.NEW_VERSION }}</$tag>#" "${{ env.CS_PROJ_PATH }}"
+          done
+          echo "Verify contents of ${{ env.CS_PROJ_PATH }}"
+          cat ${{ env.CS_PROJ_PATH }}
+
       - name: Setup .NET SDK 🛠️
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.x'
+          dotnet-version: "6.x"
 
       - name: Restore .NET dependencies 📦
         run: dotnet restore
