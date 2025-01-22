@@ -10,6 +10,11 @@
     <UserSecretsId>159b1642-0bcf-4e65-95df-a97033eff653</UserSecretsId>
   </PropertyGroup>
 
+  <!-- Condition: If we pass AdditionalTargetFrameworks in CI, add them -->
+  <PropertyGroup Condition="'$(AdditionalTargetFrameworks)' != ''">
+    <TargetFrameworks>$(TargetFrameworks);$(AdditionalTargetFrameworks)</TargetFrameworks>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
