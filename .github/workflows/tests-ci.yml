@@ -1,0 +1,49 @@
+name: Backend Tests
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        include:
+          - name: ".NET Core 3.1"
+            dotnet-version: "3.1.x"
+            framework: "netcoreapp3.1"
+
+          - name: ".NET 6"
+            dotnet-version: "6.0.x"
+            framework: "net6.0"
+
+          - name: ".NET 7"
+            dotnet-version: "7.0.x"
+            framework: "net7.0"
+
+          - name: ".NET 8"
+            dotnet-version: "8.x"
+            framework: "net8.0"
+
+          - name: ".NET 9"
+            dotnet-version: "9.x"
+            framework: "net9.0"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET ${{ matrix.name }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Test on ${{ matrix.name }}
+        run: dotnet test --configuration Release --no-build --framework ${{ matrix.framework }} --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
