@@ -27,7 +27,7 @@ jobs:
       - name: Setup .NET SDK 🛠️
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "6.x"
+          dotnet-version: "8.x" # Target of the test project
 
       - name: Restore .NET dependencies 📦
         run: dotnet restore
