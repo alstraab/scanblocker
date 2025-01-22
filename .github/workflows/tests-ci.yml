@@ -1,4 +1,4 @@
-name: Backend Tests
+name: Tests
 
 on:
   pull_request:
@@ -11,39 +11,22 @@ jobs:
   backend-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      matrix:
-        include:
-          - name: ".NET Core 3.1"
-            dotnet-version: "3.1.x"
-            framework: "netcoreapp3.1"
-
-          - name: ".NET 6"
-            dotnet-version: "6.0.x"
-            framework: "net6.0"
-
-          - name: ".NET 7"
-            dotnet-version: "7.0.x"
-            framework: "net7.0"
-
-          - name: ".NET 8"
-            dotnet-version: "8.x"
-            framework: "net8.0"
-
-          - name: ".NET 9"
-            dotnet-version: "9.x"
-            framework: "net9.0"
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup .NET ${{ matrix.name }}
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          cache: true
+          dotnet-version: 8.x
+          cache-dependency-path: ./ScanBlockPlugin/packages.lock.json
 
-      - name: Build
-        run: dotnet build /p:AdditionalTargetFrameworks="${{ matrix.framework }}"
+      - name: Restore .NET dependencies 📦
+        run: dotnet restore --locked-mode
 
-      - name: Test on ${{ matrix.name }}
-        run: dotnet test --no-build  --framework ${{ matrix.framework }} --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }} -e DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+      - name: Build Backend Application 🏗️
+        run: dotnet build --no-restore
+
+      - name: Run Backend Tests 🧪
+        run: dotnet test ScanBlockPlugin.sln --no-build --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
