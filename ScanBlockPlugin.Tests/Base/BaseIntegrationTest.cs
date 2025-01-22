@@ -2,7 +2,7 @@ using Alstra.ScanBlockPlugin;
 using Microsoft.Extensions.Configuration;
 using ServiceStack;
 
-namespace ScanBlockPluginTest.Base;
+namespace ScanBlockPlugin.Tests.Base;
 
 public class BaseIntegrationTest
 {

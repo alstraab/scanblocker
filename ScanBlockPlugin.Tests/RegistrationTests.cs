@@ -1,6 +1,6 @@
-using ScanBlockPluginTest.Base;
+using ScanBlockPlugin.Tests.Base;
 
-namespace ScanBlockPluginTest;
+namespace ScanBlockPlugin.Tests;
 
 public class RegistrationTests : BaseIntegrationTest
 {

@@ -1,9 +1,9 @@
 using System.Net;
-using ScanBlockPluginTest.Base;
 using ServiceStack;
 using Alstra.ScanBlockPlugin.Config;
+using ScanBlockPlugin.Tests.Base;
 
-namespace ScanBlockPluginTest;
+namespace ScanBlockPlugin.Tests;
 
 public class ScoringTests : BaseIntegrationTest
 {
