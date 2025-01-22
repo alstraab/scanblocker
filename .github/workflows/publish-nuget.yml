@@ -1,0 +1,33 @@
+name: Publish NuGet Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK 🛠️
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.x'
+
+      - name: Restore .NET dependencies 📦
+        run: dotnet restore
+
+      - name: Build project 🏗️
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests 🧪
+        run: dotnet test ScanBlockPlugin.sln --no-build --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
+
+      - name: Create NuGet package 📦
+        run: dotnet pack --no-build --configuration Release --output ./nupkg
+
+      # Publish the package to nuget.org
+      - name: Publish NuGet Package 🚀
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
