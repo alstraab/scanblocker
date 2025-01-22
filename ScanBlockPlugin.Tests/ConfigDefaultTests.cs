@@ -1,6 +1,6 @@
 using Alstra.ScanBlockPlugin.Config;
 
-namespace ScanBlockPluginTest;
+namespace ScanBlockPlugin.Tests;
 
 public class ConfigDefaultTests
 {
