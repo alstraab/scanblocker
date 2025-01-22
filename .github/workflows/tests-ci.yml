@@ -29,4 +29,4 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Run Backend Tests 🧪
-        run: dotnet test ScanBlockPlugin.sln --no-build --verbosity normal -e servicestack__license=${{ secrets.SERVICESTACK_LICENSE }}
+        run: dotnet test ScanBlockPlugin.sln --no-build --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
