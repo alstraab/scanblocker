@@ -43,7 +43,7 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Build
-        run: dotnet build --framework ${{ matrix.framework }} /p:AdditionalTargetFrameworks="${{ matrix.framework }}"
+        run: dotnet build /p:AdditionalTargetFrameworks="${{ matrix.framework }}"
 
       - name: Test on ${{ matrix.name }}
         run: dotnet test --configuration Release --no-build  --framework ${{ matrix.framework }} --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
