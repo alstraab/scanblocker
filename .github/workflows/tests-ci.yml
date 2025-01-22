@@ -46,4 +46,4 @@ jobs:
         run: dotnet build /p:AdditionalTargetFrameworks="${{ matrix.framework }}"
 
       - name: Test on ${{ matrix.name }}
-        run: dotnet test --configuration Release --no-build  --framework ${{ matrix.framework }} --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }} -e DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+        run: dotnet test --no-build  --framework ${{ matrix.framework }} --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }} -e DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
