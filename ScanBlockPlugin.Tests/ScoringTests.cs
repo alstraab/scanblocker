@@ -113,12 +113,12 @@ public class ScoringTests : BaseIntegrationTest
     public void Host_Score_Cannot_Go_Past_100()
     {
         // Arrange
+        var path = Faker.PickRandom(ScanBlockFeatureConfigDefaults.ForbiddenFullPaths);
         var requestCount = (100 / ScanBlockFeatureConfigDefaults.ForbiddenFullPathsScore) + 1;
 
         // Act
         for (var i = 0; i < requestCount; i += 1)
         {
-            var path = Faker.PickRandom(ScanBlockFeatureConfigDefaults.ForbiddenFullPaths);
             MakeAnonymousRequest(path);
         }
 

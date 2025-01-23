@@ -94,5 +94,10 @@ namespace Alstra.ScanBlockPlugin.Config
         /// Formatter for <see cref="HostScoreInfo"/>
         /// </summary>
         public HostScoreInfoFormatter HostScoreInfoFormatter { get; set; } = new PlainTextFormatter();
+
+        /// <summary>
+        /// <inheritdoc cref="ScanBlockFeatureConfigDefaults.RequestItemKey"/>
+        /// </summary>
+        public string RequestItemKey { get; set; } = ScanBlockFeatureConfigDefaults.RequestItemKey;
     }
 }

@@ -20,7 +20,9 @@ public class BaseIntegrationTest
 
         appHost.Plugins.Add(Plugin);
 
-        var serviceStackLicense = appHost.Configuration.GetSection("servicestack").GetValue<string>("license");
+        var serviceStackLicense = appHost.Configuration.GetSection("servicestack").GetValue<string>("license")
+                                  ?? Environment.GetEnvironmentVariable("SERVICESTACK_LICENSE");
+        
         Licensing.RegisterLicense(serviceStackLicense);
 
         AppHost = appHost.Init().Start(BaseUri);
@@ -29,11 +31,11 @@ public class BaseIntegrationTest
     [OneTimeTearDown]
     protected void TearDownServiceStack() => AppHost.Dispose();
 
-    protected static IConfiguration BuildConfiguration()
+    private static IConfiguration BuildConfiguration()
     {
         var configurationBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
         configurationBuilder.AddUserSecrets<AppSelfHost>(true, true);

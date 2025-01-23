@@ -34,7 +34,7 @@ public override void Configure(Container container)
         PermanentlyAllowedHosts = ["123.456.789.10", "example.com"],
         // Use a custom URL for viewing host scores
         HostScoreListingPath = "/host-scores", // defaults to "/scanblock/hosts"
-        // Log requests that got a score. Can fire twice for a request if it hits both GlobalRequestFilters and CatchAllHandlers
+        // Log requests that got a score.
         OnScoredRequest = (req, reason) => Log.Warning(reason),
         // Log blocked requests
         OnBlockedRequest = (request, reason) => Log.Warning(reason),
@@ -49,7 +49,7 @@ public override void Configure(Container container)
 1. **Request Interception**: The plugin intercepts each incoming HTTP request to your ServiceStack services using global request filters and catch-all handlers.
 2. **Pattern Matching**: It checks the request against a list of known paths, keywords, and other patterns commonly used by vulnerability scanners. 
 3. **Custom Rules**: You can define custom rules to allow or block specific requests based on your application's requirements. This includes allowing authenticated users, skipping scores for logged-in users, and permanently allowing certain hosts.
-4. **Scoring**: The plugin maintains a score for each host (IP address) based on the requests it makes. Score is calculated for the last 7 days. Restarting the server (or using `ScanBlockerPlugin.ResetScores()`) resets the scores. Only unique reasons per day are scored.
+4. **Scoring**: The plugin maintains a score for each host (IP address) based on the requests it makes. Score is calculated for the last 7 days. Restarting the server (or using `ScanBlockerPlugin.ResetScores()`) resets the scores.
 5. **Blocking**: If a host's score for the last 7 days exceeds a configurable threshold, the plugin blocks further requests from that host by returning a `ServiceUnavailable` status. If a host exceeds 100 points, it will neither receive nor lose scores and is blocked permanently.
 
 ## Compatibility
