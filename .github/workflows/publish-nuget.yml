@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Update assembly version in Blue.csproj ✍️
+      - name: Update assembly version ✍️
         env:
           CS_PROJ_PATH: ScanBlockPlugin/ScanBlockPlugin.csproj
         run: |
