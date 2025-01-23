@@ -9,6 +9,12 @@ namespace Alstra.ScanBlockPlugin.Config
         /// Path to list host scores
         /// </summary>
         public static readonly string HostScoreListingPath = "/scanblock/hosts";
+
+        /// <summary>
+        /// Key to Items on request to prevent multiple scans on the same request
+        /// </summary>
+        public static readonly string RequestItemKey = "ScanBlockFeature";
+
         /// <summary>
         /// Hosts with score greater or equal to this threshold will be blocked
         /// </summary>
