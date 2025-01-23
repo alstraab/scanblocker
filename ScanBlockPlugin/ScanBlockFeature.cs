@@ -77,6 +77,13 @@ namespace Alstra.ScanBlockPlugin
                 return;
             }
 
+            // Request is already handled
+            if (request.Items.ContainsKey(config.RequestItemKey))
+            {
+                return;
+            }
+            request.Items[config.RequestItemKey] = new object();
+
             // Should we list host scores?
             if (config.AllowHostScoreListing(request)
                 && request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase))
