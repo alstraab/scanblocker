@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          cache: true
+          dotnet-version: 8.x
+          cache-dependency-path: ./ScanBlockPlugin/packages.lock.json
+
+      - name: Restore .NET dependencies 📦
+        run: dotnet restore --locked-mode
+
+      - name: Build Backend Application 🏗️
+        run: dotnet build --no-restore
+
+      - name: Run Backend Tests 🧪
+        run: dotnet test ScanBlockPlugin.sln --no-build --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
