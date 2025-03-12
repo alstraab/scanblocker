@@ -72,7 +72,7 @@ namespace Alstra.ScanBlockPlugin
             // No checks on empty requests
             if (request is null ||
                 string.IsNullOrEmpty(request.PathInfo) ||
-                string.IsNullOrEmpty(request.UserHostAddress))
+                string.IsNullOrEmpty(request.RemoteIp))
             {
                 return;
             }
@@ -104,7 +104,7 @@ namespace Alstra.ScanBlockPlugin
             }
 
             // We don't check allowed hosts
-            if (config.PermanentlyAllowedHosts.Contains(request.UserHostAddress))
+            if (config.PermanentlyAllowedHosts.Contains(request.RemoteIp))
             {
                 return;
             }
@@ -113,19 +113,19 @@ namespace Alstra.ScanBlockPlugin
             RegisterScores(request);
 
             // Evaluate score
-            if (HostScoreRegistry.GetScore(request.UserHostAddress) < config.BlockScoreThreshold)
+            if (HostScoreRegistry.GetScore(request.RemoteIp) < config.BlockScoreThreshold)
             {
                 return;
             }
 
             // Only purge if score is above threshold so we don't impact all requests
-            HostScoreRegistry.PurgeOldScores(request.UserHostAddress);
+            HostScoreRegistry.PurgeOldScores(request.RemoteIp);
 
             // Check score again after purge and block if necessary
-            var score = HostScoreRegistry.GetScore(request.UserHostAddress);
+            var score = HostScoreRegistry.GetScore(request.RemoteIp);
             if (score >= config.BlockScoreThreshold)
             {
-                config.OnBlockedRequest(request, $"{request.UserHostAddress} blocked due to a score of {score}");
+                config.OnBlockedRequest(request, $"{request.RemoteIp} blocked due to a score of {score}");
 
                 response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
                 response.Dto = DtoUtils.CreateErrorResponse(request, new HttpError(HttpStatusCode.ServiceUnavailable, "ServiceUnavailable"));
@@ -207,7 +207,7 @@ namespace Alstra.ScanBlockPlugin
 
             if (score > 0)
             {
-                HostScoreRegistry.AddScore(request.UserHostAddress, score, reason);
+                HostScoreRegistry.AddScore(request.RemoteIp, score, reason);
                 config.OnScoredRequest(request, reason);
             }
         }

@@ -19,7 +19,7 @@ namespace Alstra.ScanBlockPlugin.Registry
         /// <summary>
         /// Add score to a host where the total score is less than <see cref="MaxScore"/>
         /// </summary>
-        /// <param name="host">UserHostAddress</param>
+        /// <param name="host">RemoteIp</param>
         /// <param name="score">Score to add</param>
         /// <param name="reason">Reason for adding score</param>
         /// <remarks>
@@ -52,7 +52,7 @@ namespace Alstra.ScanBlockPlugin.Registry
         /// <summary>
         /// Get the total score of a host
         /// </summary>
-        /// <param name="host">UserHostAddress</param>
+        /// <param name="host">RemoteIp</param>
         /// <returns>uint</returns>
         public uint GetScore(string host) => HostScores.TryGetValue(host, out var scores)
             ? Convert.ToUInt16(scores.Sum(score => score.Score))
@@ -67,7 +67,7 @@ namespace Alstra.ScanBlockPlugin.Registry
         /// <summary>
         /// Purge old scores from a host
         /// </summary>
-        /// <param name="host">UserHostAddress</param>
+        /// <param name="host">RemoteIp</param>
         public void PurgeOldScores(string host)
         {
             var oldScore = GetScore(host);
