@@ -22,7 +22,7 @@ public class BaseIntegrationTest
 
         var serviceStackLicense = appHost.Configuration.GetSection("servicestack").GetValue<string>("license")
                                   ?? Environment.GetEnvironmentVariable("SERVICESTACK_LICENSE");
-        
+
         Licensing.RegisterLicense(serviceStackLicense);
 
         AppHost = appHost.Init().Start(BaseUri);
