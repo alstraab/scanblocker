@@ -90,6 +90,7 @@ namespace Alstra.ScanBlockPlugin
             {
                 var table = HostScoreRegistry.GetScoreInfoState();
                 response.StatusCode = (int)HttpStatusCode.OK;
+                response.ContentType = config.HostScoreInfoFormatter.MimeType;
                 response.WriteToResponse(
                     config.HostScoreInfoFormatter.Format(table, config),
                     config.HostScoreInfoFormatter.MimeType).Wait();
