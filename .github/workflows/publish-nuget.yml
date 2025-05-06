@@ -6,6 +6,7 @@ on:
       VERSION:
         required: true
         type: string
+        description: "Version to set in the assembly"
 
 jobs:
   build-and-publish:
@@ -36,7 +37,8 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run tests 🧪
-        run: dotnet test ScanBlockPlugin.sln --no-build --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
+        # Also build since build step has configuration Release
+        run: dotnet test ScanBlockPlugin.sln --verbosity normal -e SERVICESTACK_LICENSE=${{ secrets.SERVICESTACK_LICENSE }}
 
       - name: Create NuGet package 📦
         run: dotnet pack --no-build --configuration Release --output ./nupkg
