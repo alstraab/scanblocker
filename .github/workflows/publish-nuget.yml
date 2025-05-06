@@ -20,7 +20,7 @@ jobs:
           CS_PROJ_PATH: ScanBlockPlugin/ScanBlockPlugin.csproj
         run: |
           for tag in AssemblyVersion FileVersion Version; do
-            sed -i "s#<$tag>.*</$tag>#<$tag>${{ inputs.NEW_VERSION }}</$tag>#" "${{ env.CS_PROJ_PATH }}"
+            sed -i "s#<$tag>.*</$tag>#<$tag>${{ inputs.VERSION }}</$tag>#" "${{ env.CS_PROJ_PATH }}"
           done
           echo "Verify contents of ${{ env.CS_PROJ_PATH }}"
           cat ${{ env.CS_PROJ_PATH }}
