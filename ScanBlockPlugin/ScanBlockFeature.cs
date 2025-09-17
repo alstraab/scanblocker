@@ -92,14 +92,14 @@ namespace Alstra.ScanBlockPlugin
                 return;
             }
 
-            // No checks on logged in users
-            if (config.SkipHostScoringForRequest(request))
+            // We don't check allowed hosts
+            if (config.PermanentlyAllowedHosts.Contains(request.RemoteIp))
             {
                 return;
             }
 
-            // We don't check allowed hosts
-            if (config.PermanentlyAllowedHosts.Contains(request.RemoteIp))
+            // Skip scoring for this request
+            if (config.SkipHostScoringForRequest(request))
             {
                 return;
             }
