@@ -207,6 +207,10 @@ namespace Alstra.ScanBlockPlugin
             }
         }
 
+        /// <summary>
+        /// Hijack response to list host scores
+        /// </summary>
+        /// <param name="response"></param>
         private void ListHostScores(IResponse response)
         {
             var table = HostScoreRegistry.GetScoreInfoState();
