@@ -85,16 +85,10 @@ namespace Alstra.ScanBlockPlugin
             request.Items[config.RequestItemKey] = new object();
 
             // Should we list host scores?
-                var table = HostScoreRegistry.GetScoreInfoState();
-                response.StatusCode = (int)HttpStatusCode.OK;
-                response.ContentType = config.HostScoreInfoFormatter.MimeType;
-                response.WriteToResponse(
-                    config.HostScoreInfoFormatter.Format(table, config),
-                    config.HostScoreInfoFormatter.MimeType).Wait();
-                response.EndRequest();
             if (request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase)
                 && config.AllowHostScoreListing(request))
             {
+                ListHostScores(response);
                 return;
             }
 
@@ -211,6 +205,17 @@ namespace Alstra.ScanBlockPlugin
                 HostScoreRegistry.AddScore(request.RemoteIp, score, reason);
                 config.OnScoredRequest(request, reason);
             }
+        }
+
+        private void ListHostScores(IResponse response)
+        {
+            var table = HostScoreRegistry.GetScoreInfoState();
+            response.StatusCode = (int)HttpStatusCode.OK;
+            response.ContentType = config.HostScoreInfoFormatter.MimeType;
+            response.WriteToResponse(
+                config.HostScoreInfoFormatter.Format(table, config),
+                config.HostScoreInfoFormatter.MimeType).Wait();
+            response.EndRequest();
         }
     }
 }
