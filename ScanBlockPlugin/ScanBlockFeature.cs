@@ -85,9 +85,6 @@ namespace Alstra.ScanBlockPlugin
             request.Items[config.RequestItemKey] = new object();
 
             // Should we list host scores?
-            if (config.AllowHostScoreListing(request)
-                && request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase))
-            {
                 var table = HostScoreRegistry.GetScoreInfoState();
                 response.StatusCode = (int)HttpStatusCode.OK;
                 response.ContentType = config.HostScoreInfoFormatter.MimeType;
@@ -95,6 +92,9 @@ namespace Alstra.ScanBlockPlugin
                     config.HostScoreInfoFormatter.Format(table, config),
                     config.HostScoreInfoFormatter.MimeType).Wait();
                 response.EndRequest();
+            if (request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase)
+                && config.AllowHostScoreListing(request))
+            {
                 return;
             }
 
