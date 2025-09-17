@@ -77,7 +77,7 @@ namespace Alstra.ScanBlockPlugin
                 return;
             }
 
-            // If we already handled this request, skip it
+            // Is this request already handled?
             if (IsRequestHandled(request))
             {
                 return;
@@ -93,13 +93,13 @@ namespace Alstra.ScanBlockPlugin
                 return;
             }
 
-            // We don't check allowed hosts
+            // Is the host permanently allowed?
             if (config.PermanentlyAllowedHosts.Contains(request.RemoteIp))
             {
                 return;
             }
 
-            // Skip scoring for this request
+            // Should we skip scoring for this request?
             if (config.SkipHostScoringForRequest(request))
             {
                 return;
