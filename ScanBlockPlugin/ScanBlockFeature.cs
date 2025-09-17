@@ -77,35 +77,30 @@ namespace Alstra.ScanBlockPlugin
                 return;
             }
 
-            // Request is already handled
-            if (request.Items.ContainsKey(config.RequestItemKey))
+            // Is this request already handled?
+            if (IsRequestHandled(request))
             {
                 return;
             }
-            request.Items[config.RequestItemKey] = new object();
+
+            MarkRequestHandled(request);
 
             // Should we list host scores?
-            if (config.AllowHostScoreListing(request)
-                && request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase))
+            if (request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase)
+                && config.AllowHostScoreListing(request))
             {
-                var table = HostScoreRegistry.GetScoreInfoState();
-                response.StatusCode = (int)HttpStatusCode.OK;
-                response.ContentType = config.HostScoreInfoFormatter.MimeType;
-                response.WriteToResponse(
-                    config.HostScoreInfoFormatter.Format(table, config),
-                    config.HostScoreInfoFormatter.MimeType).Wait();
-                response.EndRequest();
+                ListHostScores(response);
                 return;
             }
 
-            // No checks on logged in users
-            if (config.SkipHostScoringForRequest(request))
-            {
-                return;
-            }
-
-            // We don't check allowed hosts
+            // Is the host permanently allowed?
             if (config.PermanentlyAllowedHosts.Contains(request.RemoteIp))
+            {
+                return;
+            }
+
+            // Should we skip scoring for this request?
+            if (config.SkipHostScoringForRequest(request))
             {
                 return;
             }
@@ -212,5 +207,38 @@ namespace Alstra.ScanBlockPlugin
                 config.OnScoredRequest(request, reason);
             }
         }
+
+        /// <summary>
+        /// Hijack response to list host scores
+        /// </summary>
+        /// <param name="response"></param>
+        private void ListHostScores(IResponse response)
+        {
+            var table = HostScoreRegistry.GetScoreInfoState();
+            response.StatusCode = (int)HttpStatusCode.OK;
+            response.ContentType = config.HostScoreInfoFormatter.MimeType;
+            response.WriteToResponse(
+                config.HostScoreInfoFormatter.Format(table, config),
+                config.HostScoreInfoFormatter.MimeType).Wait();
+            response.EndRequest();
+        }
+
+        /// <summary>
+        /// Determines whether the specified request has been handled.
+        /// </summary>
+        /// <param name="request">The request to check.</param>
+        /// <returns><see langword="true"/> if the request contains the required item key indicating it has been handled; 
+        /// otherwise, <see langword="false"/>.</returns>
+        private bool IsRequestHandled(IRequest request) =>
+            request.Items.ContainsKey(config.RequestItemKey);
+
+        /// <summary>
+        /// Marks the specified request as handled by associating it with a marker object.
+        /// </summary>
+        /// <remarks>This method uses the configured request item key to store a marker object in the
+        /// request's items collection.</remarks>
+        /// <param name="request">The request to mark as handled.</param>
+        private void MarkRequestHandled(IRequest request) =>
+            request.Items[config.RequestItemKey] = new object();
     }
 }
