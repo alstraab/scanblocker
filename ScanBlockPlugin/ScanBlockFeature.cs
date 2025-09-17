@@ -77,12 +77,13 @@ namespace Alstra.ScanBlockPlugin
                 return;
             }
 
-            // Request is already handled
-            if (request.Items.ContainsKey(config.RequestItemKey))
+            // If we already handled this request, skip it
+            if (IsRequestHandled(request))
             {
                 return;
             }
-            request.Items[config.RequestItemKey] = new object();
+
+            MarkRequestHandled(request);
 
             // Should we list host scores?
             if (request.PathInfo.Equals(config.HostScoreListingPath, StringComparison.OrdinalIgnoreCase)
@@ -221,5 +222,23 @@ namespace Alstra.ScanBlockPlugin
                 config.HostScoreInfoFormatter.MimeType).Wait();
             response.EndRequest();
         }
+
+        /// <summary>
+        /// Determines whether the specified request has been handled.
+        /// </summary>
+        /// <param name="request">The request to check.</param>
+        /// <returns><see langword="true"/> if the request contains the required item key indicating it has been handled; 
+        /// otherwise, <see langword="false"/>.</returns>
+        private bool IsRequestHandled(IRequest request) =>
+            request.Items.ContainsKey(config.RequestItemKey);
+
+        /// <summary>
+        /// Marks the specified request as handled by associating it with a marker object.
+        /// </summary>
+        /// <remarks>This method uses the configured request item key to store a marker object in the
+        /// request's items collection.</remarks>
+        /// <param name="request">The request to mark as handled.</param>
+        private void MarkRequestHandled(IRequest request) =>
+            request.Items[config.RequestItemKey] = new object();
     }
 }
