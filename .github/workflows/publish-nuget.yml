@@ -68,5 +68,5 @@ jobs:
         run: |
           gh release create "${{ env.NEW_VERSION }}" --title "${{ env.NEW_VERSION }}" --generate-notes --prerelease=true
           
-      #- name: Publish NuGet Package 🚀
-      #  run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      - name: Publish NuGet Package 🚀
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
