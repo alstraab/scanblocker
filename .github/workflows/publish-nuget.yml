@@ -37,7 +37,7 @@ jobs:
         with:
           dotnet-version: "8.x" # Target of the test project
 
-      - name: Restore .NET dependencies 📦
+      - name: Restore .NET dependencies 🛬
         run: dotnet restore
 
       - name: Build project 🏗️
@@ -52,8 +52,8 @@ jobs:
         
       - name: Create tag, commit and push to origin 📋
         env:
-            CS_PROJ_PATH: ScanBlockPlugin/ScanBlockPlugin.csproj
-            NEW_VERSION: ${{ inputs.VERSION }}
+          CS_PROJ_PATH: ScanBlockPlugin/ScanBlockPlugin.csproj
+          NEW_VERSION: ${{ inputs.VERSION }}
         run: |
           git add ${{ env.CS_PROJ_PATH }}
           git commit -m "Bump version to ${{ env.NEW_VERSION }}"
@@ -70,3 +70,10 @@ jobs:
           
       - name: Publish NuGet Package 🚀
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Publish latest prerelease 🤗
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ inputs.VERSION }}
+        run: |
+          gh release edit "${{ env.NEW_VERSION }}" --prerelease=false --latest=true
