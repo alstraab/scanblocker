@@ -71,7 +71,7 @@ jobs:
       - name: Publish NuGet Package 🚀
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
-      - name: Publish latest prerelease 🤗
+      - name: Promote to stable release 🚩
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_VERSION: ${{ inputs.VERSION }}
