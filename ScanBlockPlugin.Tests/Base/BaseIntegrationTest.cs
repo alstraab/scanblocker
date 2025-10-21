@@ -4,7 +4,7 @@ using ServiceStack;
 
 namespace ScanBlockPlugin.Tests.Base;
 
-public class BaseIntegrationTest
+public abstract class BaseIntegrationTest
 {
     protected static string BaseUri => "http://localhost:2000";
     protected ServiceStackHost AppHost { get; private set; }
