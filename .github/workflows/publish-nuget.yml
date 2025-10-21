@@ -12,8 +12,15 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository 📦
         uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Set up Git credentials 🪪
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Update assembly version ✍️
         env:
@@ -30,7 +37,7 @@ jobs:
         with:
           dotnet-version: "8.x" # Target of the test project
 
-      - name: Restore .NET dependencies 📦
+      - name: Restore .NET dependencies 🛬
         run: dotnet restore
 
       - name: Build project 🏗️
@@ -42,6 +49,31 @@ jobs:
 
       - name: Create NuGet package 📦
         run: dotnet pack --no-build --configuration Release --output ./nupkg
+        
+      - name: Create tag, commit and push to origin 📋
+        env:
+          CS_PROJ_PATH: ScanBlockPlugin/ScanBlockPlugin.csproj
+          NEW_VERSION: ${{ inputs.VERSION }}
+        run: |
+          git add ${{ env.CS_PROJ_PATH }}
+          git commit -m "Bump version to ${{ env.NEW_VERSION }}"
+          git push origin
+          git tag "${{ env.NEW_VERSION }}"
+          git push origin "${{ env.NEW_VERSION }}"
 
+      - name: Create a release using GitHub CLI 🎁
+        env:
+          NEW_VERSION: ${{ inputs.VERSION }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ env.NEW_VERSION }}" --title "${{ env.NEW_VERSION }}" --generate-notes --prerelease=true
+          
       - name: Publish NuGet Package 🚀
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Promote to stable release 🚩
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ inputs.VERSION }}
+        run: |
+          gh release edit "${{ env.NEW_VERSION }}" --prerelease=false --latest=true
