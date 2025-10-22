@@ -8,19 +8,25 @@ on:
         type: string
         description: "Version to set in the assembly"
 
+permissions:
+  contents: write
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository 📦
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
 
       - name: Set up Git credentials 🪪
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Display verbose remote info
+          git remote -v
 
       - name: Update assembly version ✍️
         env:
@@ -33,12 +39,14 @@ jobs:
           cat ${{ env.CS_PROJ_PATH }}
 
       - name: Setup .NET SDK 🛠️
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: "8.x" # Target of the test project
+          dotnet-version: "9.x" # Target of the test project
 
       - name: Restore .NET dependencies 🛬
-        run: dotnet restore
+        run: |
+          dotnet --version
+          dotnet restore
 
       - name: Build project 🏗️
         run: dotnet build --no-restore --configuration Release
