@@ -42,7 +42,7 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "9.x" # Target of the test project
-        
+
       - name: Restore .NET dependencies 🛬
         run: |
           dotnet --version
